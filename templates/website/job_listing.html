@@ -1,0 +1,72 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+<div class="container">
+  <form class="search-form" action="{% url 'search' %}" method="GET">
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <input type="text" class="form-control" name="job_title" placeholder="Job Title">
+      </div>
+      <div class="form-group col-md-4">
+        <input type="text" class="form-control" name="job_location" placeholder="Location">
+      </div>
+      <div class="form-group col-md-4">
+        <select class="form-control" name="employment_type">
+          <option value="">Employment Type</option>
+          <option value="Full-time">Full-time</option>
+          <option value="Part-time">Part-time</option>
+          <option value="Contract">Contract</option>
+          <!-- Add more options as needed -->
+        </select>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+
+
+          <div class="row">
+            {% if jobapp %}
+
+                {% for job in jobapp %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ job.title }}</h5>
+                                <p class="card-text"><strong>Location:</strong> {{ job.location }}</p>
+                                <p class="card-text"><strong>Employment Type:</strong> {{ job.Employment_Type }}</p>
+                                <!-- Add any other job details you want to display here -->
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col">
+                    <p>No jobs found.</p>
+                </div>
+            {% endif %}
+        </div>
+
+    <h1 class="my-4">Job Listings</h1>
+    <div class="row">
+        {% for job in jobs %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body" style="background: linear-gradient(45deg, #FF6B6B, #FF8E53);">
+                    <h5 class="card-title" style="color: #fff;">{{ job.title }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted" style="color: #fff;">{{ job.company }}</h6>
+                    <p class="card-text" style="color: #fff;"><strong>Location:</strong> {{ job.location }}</p>
+                    <p class="card-text" style="color: #fff;"><strong>Salary:</strong> {{ job.salary }}</p>
+                    <p class="card-text" style="color: #fff;"><strong>Requirements:</strong> {{ job.required_qualifications }}</p>
+                    <p class="card-text" style="color: #fff;"><strong>Responsibilities:</strong> {{ job.responsibilities }}</p>
+                    <p class="card-text" style="color: #fff;"><strong>Application_Deadline:</strong> {{application_Deadline}}</p>
+
+                    <p class="card-text" style="color: #fff;"><strong>Available:</strong> {% if job.is_available %}Yes{% else %}No{% endif %}</p>
+                    <p class="card-text" style="color: #fff;"><strong>Posted on:</strong> {{ job.timestamp }}</p>
+                    <a href="{% url 'job-details' job.id %}" class="btn btn-light">Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h1 class="card-title text-center mb-4">Update Job</h1>
+                    
+                    <!-- Display messages -->
+                    {% if messages %}
+                        <div class="messages">
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="id_title">Title:</label>
+                            {{ form.title }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_location">Location:</label>
+                            {{ form.location }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_salary">Salary:</label>
+                            {{ form.salary }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_job_description">Job Description:</label>
+                            {{ form.job_description }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_job_description">Is_available:</label>
+                            {{ form.is_available }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_required_qualifications">Required Qualifications:</label>
+                            {{ form.required_qualifications }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_responsibilities">Responsibilities:</label>
+                            {{ form.responsibilities }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_application_Deadline">Application Deadline:</label>
+                            {{ form.application_Deadline }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_salary_Range">Salary Range:</label>
+                            {{ form.salary_Range }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_Employment_Type">Employment Type:</label>
+                            {{ form.Employment_Type }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_Company_Benefits">Company Benefits:</label>
+                            {{ form.Company_Benefits }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_How_to_Apply">How to Apply:</label>
+                            {{ form.How_to_Apply }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_How_to_Apply">Status:</label>
+                            {{ form.status }}
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary">Update Job</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'users/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="text-center">Register as an Recruiter</h3>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                    <div class="alert alert-info" role="alert">
+                        {% for message in messages %}
+                        <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <form method="post">
+                        {% csrf_token %}
+                        {% for field in form %}
+                        <div class="form-group">
+                            {{ field.label_tag }}
+                            {% render_field field class="form-control" %}
+                            {% for error in field.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary btn-block">Register</button>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <p class="text-center">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h3>Applied Jobs</h3>
+    <div class="row">
+        {% if applied_jobs %}
+            {% for application in applied_jobs %}
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ application.job.title }}</h5>
+                            <p class="card-text"><strong>Company:</strong> {{ application.job.company }}</p>
+                            <p class="card-text"><strong>Location:</strong> {{ application.job.location }}</p>
+                            <p class="card-text"><strong>Status:</strong> {{ application.status }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No jobs applied yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

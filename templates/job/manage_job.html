@@ -1,0 +1,40 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4">job posted by you</h1>
+
+    <!-- Job listings -->
+    <div class="row">
+        {% for job in jobs %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">{{ job.title }}</h5>
+                    <p class="card-text"><strong>Description:</strong> <span class="text-info">{{ job.job_description }}</span></p>
+                    <p class="card-text"><strong>Location:</strong> <span class="text-success">{{ job.location }}</span></p>
+                    <p class="card-text"><strong>Salary:</strong> <span class="text-warning">{{ job.salary }}</span></p>
+                    <p class="card-text"><strong>Requirements:</strong> <span class="text-danger">{{ job.requirements }}</span></p>
+                    <p class="card-text"><strong>Number of Applications:</strong> <span class="badge badge-secondary">{{ job.applyjob_set.count }}</span></p>
+                    <!-- Display status of job applications -->
+                    <h6 class="card-subtitle mb-2 text-muted">Job Applications:</h6>
+                    {% for application in job.applyjob_set.all %}
+                    {% empty %}
+                        <p class="card-text">No applications yet</p>
+                    {% endfor %}
+                    <!-- Button to view applications -->
+                    <a href="{% url 'all-applicant' job.pk %}" class="btn btn-info">View Applications</a>
+                    <a href="{% url 'update-job' job.pk %}" class="btn btn-primary">Edit</a>
+                    <a href="{% url 'company-delete' job.pk%}">delete job </a>
+
+                </div>
+            </div>
+        </div>
+        {% empty %}
+            <div class="col-md-12">
+                <p>No jobs found</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

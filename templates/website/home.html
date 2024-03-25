@@ -1,0 +1,117 @@
+<!-- website/templates/website/home.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareerHub - Job Listings</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareerHub - Job Listings</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+  /* Custom CSS */
+  .navbar-brand,
+  .nav-link {
+    color: #007bff; /* Change link address color to blue */
+    font-weight: bold;
+  }
+  .nav-link:hover {
+    color: #0056b3; /* Change link address color on hover */
+  }
+  /* Custom Job Portal Styling */
+  .job-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+  }
+  .job-details {
+    font-size: 14px;
+    color: #555;
+  }
+</style>
+
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="#">CareerHub - Job Listings</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h3 class="my-4 text-dark">Welcome to CareerHub - Your Gateway to Exciting Career Opportunities</h3>
+    <p>Ready to take the next step in your career? <a class="nav-link" href="{% url 'login' %}">Login to unlock exclusive job listings</a>.</p>
+    
+    <!-- Job search form -->
+    <form class="search-form" action="{% url 'search' %}" method="GET">
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <input type="text" class="form-control" name="job_title" placeholder="Job Title">
+        </div>
+        <div class="form-group col-md-4">
+          <input type="text" class="form-control" name="job_location" placeholder="Location">
+        </div>
+        <div class="form-group col-md-4">
+          <select class="form-control" name="employment_type">
+            <option value="">Employment Type</option>
+            <option value="Full-time">Full-time</option>
+            <option value="Part-time">Part-time</option>
+            <option value="Contract">Contract</option>
+            <!-- Add more options as needed -->
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+    
+    <!-- Search results -->
+    {% if jobs %}
+    <h2>Search Results</h2>
+    <div class="row">
+      {% for job in jobs %}
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <div class="card-body job-details">
+            <h5 class="card-title job-title">{{ job.title }}</h5>
+            <p class="card-subtitle mb-2 text-muted">{{ job.company }}</p>
+
+            <p><strong>Location:</strong> {{ job.location }}</p>
+            <p><strong>Salary:</strong> {{ job.salary }}</p>
+            <p><strong>Requirements:</strong> {{ job.requirements }}</p>
+            <p><strong>Ideal Candidate:</strong> {{ job.ideal_candidate }}</p>
+            <p><strong>Available:</strong> {% if job.is_available %}Yes{% else %}No{% endif %}</p>
+            <p><strong>Posted on:</strong> {{ job.timestamp }}</p>
+            <a href="{% url 'job-details' job.id %}" class="btn btn-primary">Details</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

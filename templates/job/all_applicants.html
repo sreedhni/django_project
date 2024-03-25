@@ -1,0 +1,32 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h3 class="my-4">All Applicants for {{ job.title }}</h3>
+    {% if applicants %}
+        {% for applicant in applicants %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h3 class="card-title">{{ applicant.user.username }}</h3>
+                    <p class="card-text"><strong>Email:</strong> {{ applicant.user.email }}</p>
+                    {% if applicant.resume %}
+                        <p class="card-text"><strong>Resume:</strong> {{ applicant.resume.first_name }} {{ applicant.resume.surname }}</p>
+                        <!-- Add more resume details as needed -->
+                    {% else %}
+                        <p class="card-text"><strong>No resume uploaded</strong></p>
+                    {% endif %}
+                </div>
+                {% if applicant.user%}
+                    <div class="text-center mt-4">
+                        <button type="submit" class=""><a href="{% url 'resume-details' pk=applicant.user.resume.id %}">View Resume</a></button>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            No applicants found for this job.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

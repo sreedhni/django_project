@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css" crossorigin="anonymous">
+    <title>Home Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        nav {
+            background-color: #f4f4f4;
+            padding: 10px;
+            text-align: center;
+        }
+        nav a {
+            text-decoration: none;
+            color: #333;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin: 0 5px;
+        }
+        nav a:hover {
+            background-color: #ddd;
+        }
+        .container {
+            margin: 20px auto;
+            text-align: center;
+        }
+        .container h2 {
+            color: #333;
+        }
+        .container p {
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Welcome to The JOB PORTAL</h1>
+</header>
+
+<nav style="display: flex; flex-wrap: wrap;">
+    {% if request.user.is_authenticated and request.user.is_applicant %}
+        <div style="margin-right: 10px;">
+            <a href="{% url 'applied-jobs' %}">Your applications</a>
+        </div>
+        <div style="margin-right: 10px;">
+            <a href="{% url 'update-resume' %}">Edit your resume</a>
+        </div>
+        <div style="margin-right: 10px;">
+            <a href="{% url 'search' %}">Search your job</a>
+        </div>
+        {% if request.user.resume %}
+            <div style="margin-right: 10px;">
+                <a href="{% url 'resume-details' pk=request.user.resume.pk %}">Your{{ request.user.first_name }} resume</a>
+                <a href="{% url 'profile-delete' pk=request.user.pk %}">delete account</a>
+
+                
+            </div>
+        {% endif %}
+    {% endif %}
+    <div>
+        <a href="{% url 'job-listing' %}">All Jobs</a>
+
+        
+    </div>
+
+
+
+</nav>
+<nav style="display: flex; flex-wrap: wrap;">
+
+    {% if request.user.is_authenticated %}
+        {% if request.user.is_recruiter %}
+            <a href="{% url 'manage-jobs' %}">Your job post</a>
+            <a href="{% url 'create-job' %}">Create Job</a>
+            <a href="{% url 'update-company' %}">Update your company details</a>
+            
+            <a href="{% url 'profile-delete' pk=request.user.pk %}">delete account</a>
+
+            <!-- Add button for viewing all applicants -->
+            {% for job in applicants.job_set.all %}
+
+            <a href="{% url 'all-applicant' pk=job.pk %}">View All Applicants</a>
+
+
+            {%endfor%}
+        {% endif %}
+        <a href="{% url 'logout' %}">Logout</a>
+    {% else %}
+        <a href="#">Contact</a>
+    {% endif %}
+</nav>
+<div class="mt-4 text-center">
+    <a href="{% url 'dashboard' %}" class="text-centre">Back</a>
+    
+
+</div>
+
+<div class="mt-4 text-center">
+    <a href="{% url 'home' %}" class="text-centre">Back to home</a>
+    
+
+</div>
+
+
+<div class="container">
+    {% block content %}
+    <!-- Your content goes here -->
+    {% endblock content %}
+</div>
+
+</body>
+</html>

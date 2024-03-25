@@ -1,0 +1,25 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                   
+                    <h1 class="card-title text-center mb-4">Resume Details</h1>
+                    <p><strong>Name:</strong> {{ resume.first_name }} {{ resume.surname }}</p>
+                    <p><strong>Email:</strong> {{ resume.user.email }}</p>
+                    <p><strong>Location:</strong> {{ resume.location }}</p>
+                    <p><strong>Job Title:</strong> {{ resume.job_title }}</p>
+                    <p><strong>Experience (in years):</strong> {{ resume.expierience_in_years }}</p>
+                    <p><strong>Educational Details:</strong> {{ resume.educational_details }}</p>
+                    <p><strong>Experience Detail:</strong> {{ resume.expierience_detail }}</p>
+                    <div class="text-center mt-4">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

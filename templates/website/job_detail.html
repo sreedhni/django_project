@@ -1,0 +1,40 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+<div class="container">
+    
+    <!-- Job details card -->
+    <div class="card border-primary">
+        <div class="card-body">
+
+            {% if request.user.is_authenticated and request.user.is_recruiter %}
+                {% if job.company == request.user.company %}
+                <h1>Applications received</h1>
+
+                    <h5 class="card-title">{{ job.title }}</h5>
+                    <a href="{% url 'all-applicant' job.pk %}" class="btn btn-primary mb-3">Applicant details</a>
+                {% else %}
+                    <p>You are not eligible to see their application details</p>
+                {% endif %}
+            {% endif %}
+    
+            {% if request.user.is_authenticated and request.user.is_applicant %}
+                {% if not has_applied %}
+                    <a href="{% url 'apply-to-job' job.pk %}" class="btn btn-primary mb-3">Apply Now</a>
+                {% else %}
+                    <p><span class="text-danger">You have already applied for this job</span></p>
+                {% endif %}
+                <h1>Job Details</h1>
+                <h5 class="card-title">{{ job.title }}</h5>
+                <p class="card-text"><strong>Description:</strong> {{ job.description }}</p>
+                <p class="card-text"><strong>Company:</strong> {{ job.company }}</p>
+                <h6 class="card-subtitle mb-2 text-muted">{{ job.company.name }} Details</h6>
+                <p class="card-text"><strong>Establishment Date:</strong> {{ job.company.est_date }}</p>
+                <p class="card-text"><strong>Location:</strong> {{ job.company.city }}, {{ job.company.state }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Show applicant details only if the user is a recruiter -->
+</div>
+{% endblock %}

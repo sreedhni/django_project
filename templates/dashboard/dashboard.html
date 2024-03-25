@@ -1,0 +1,115 @@
+{% extends 'users/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container">
+    {% if request.user.is_authenticated %}
+        <div class="welcome">
+            <h1>Welcome, {{ request.user.username }}!</h1>
+
+
+            <form action="" method="post">
+                {% csrf_token %}
+            </form>
+        </div>
+        <main>
+            {% if request.user.is_applicant %}
+                {% if request.user.has_resume %}
+                    <div class="alert alert-success" role="alert">
+
+                    </div>
+                {% else %}
+                    <div class="alert alert-danger" role="alert">
+                        <b>You don't have a resume yet. <a href="{% url 'update-resume' %}">Create one now</a></b>
+
+                                {% if applied_jobs %}
+            {% for application in applied_jobs %}
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ application.job.title }}</h5>
+                            <p class="card-text"><strong>Company:</strong> {{ application.job.company }}</p>
+                            <p class="card-text"><strong>Location:</strong> {{ application.job.location }}</p>
+                            <p class="card-text"><strong>Status:</strong> {{ application.status }}</p>
+                            <!-- Form for deleting the applied job -->
+                            <form method="post" action="{% url 'delete_applied_job' application.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger" style="border: none;">Discard</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No jobs applied yet.</p>
+        {% endif %}
+
+                    </div>
+                {% endif %}
+
+
+
+            {% elif request.user.is_recruiter %}
+                <div class="alert alert-danger" role="alert">
+
+                    {% if not request.user.has_company %}
+                        <div class="alert alert-danger" role="alert">
+                            <h4>You haven't created a company yet. <a href="{% url 'update-company' %}">Create one here</a></h4>
+                        </div>
+                        {%else%}
+                        <div class="alert alert-danger" role="alert">
+                            <h4> <a href="{% url 'update-company' %}">Update your company details</a></h4>
+                          
+                        </div>
+
+                    {% endif %}
+                </div>
+            {% endif %}
+            
+            <section class="overview">
+                <div class="container">
+                    {% for j in job.title_set.all %}
+                        <h2>All Applicants for "{{ j }}"</h2>
+                        {% if applicants %}
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Applicant Name</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Applied Date</th>
+                                        <th scope="col">Cover Letter</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for applicant in applicants %}
+                                        <tr>
+                                            <td>{{ applicant.user.username }}</td>
+                                            <td>{{ applicant.user.email }}</td>
+                                            <td>{{ applicant.applied_date }}</td>
+                                            <td>{{ applicant.cover_letter }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <p>No applicants found for this job.</p>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </section>
+
+            <section class="widgets">
+                <!-- Add dashboard widgets or modules here -->
+            </section>
+        </main>
+    {% else %}
+        <h1>Welcome, Guest!</h1>
+    {% endif %}
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <!-- <p>&copy; 2024 Your Company. All rights reserved.</p> -->
+    </div>
+</footer>
+{% endblock %}
