@@ -1,4 +1,5 @@
 {% extends "users/base.html" %}
+{% load humanize%}
 
 {% block content %}
     <div class="container">
@@ -37,6 +38,8 @@
                                 <h5 class="card-title">{{ job.title }}</h5>
                                 <p class="card-text"><strong>Location:</strong> {{ job.location }}</p>
                                 <p class="card-text"><strong>Employment Type:</strong> {{ job.Employment_Type }}</p>
+                                <p>Posted {{ job.timestamb|naturaltime}}</p>
+
                                 <a href="{% url 'job-details' job.id %}">Details</a>
                               
                             </div>

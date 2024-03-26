@@ -1,5 +1,5 @@
 {% extends 'users/base.html' %}
-
+{% load humanize%}
 {% block content %}
 <div class="container">
   <form class="search-form" action="{% url 'search' %}" method="GET">
@@ -60,10 +60,10 @@
                     <p class="card-text" style="color: #fff;"><strong>Requirements:</strong> {{ job.required_qualifications }}</p>
                     <p class="card-text" style="color: #fff;"><strong>Responsibilities:</strong> {{ job.responsibilities }}</p>
                     <p class="card-text" style="color: #fff;"><strong>Application_Deadline:</strong> {{application_Deadline}}</p>
+                    <p class="card-text" style="color: #fff;"><strong>Salary:</strong> {{ job.salary|intcomma }}</p>
 
                     <p class="card-text" style="color: #fff;"><strong>Available:</strong> {% if job.is_available %}Yes{% else %}No{% endif %}</p>
-                    <p class="card-text" style="color: #fff;"><strong>Posted on:</strong> {{ job.timestamp }}</p>
-
+                    <p>Posted {{ job.timestamb|naturaltime}}</p>
                     <a href="{% url 'job-details' job.id %}">Details</a>
 
                 </div>
