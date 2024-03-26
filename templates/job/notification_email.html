@@ -7,5 +7,9 @@
 </head>
 <body>
     <h1>New Job Application Notification</h1>
+    <p>Dear {{ notification.receiver.user.username }},</p>
+    <p>You have received a new job application for the position of {{ notification.message }}.</p>
+    <p>Please login to your dashboard to view the details.</p>
+    <p>Thank you!</p>
 </body>
 </html>
