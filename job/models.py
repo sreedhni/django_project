@@ -35,5 +35,13 @@ class ApplyJob(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     job= models.ForeignKey(Job, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=status_choices)
+    status = models.CharField(max_length=20, choices=status_choices,default="Pending")
     resume=models.FileField(upload_to="resumes",null=True,blank=True)
+
+
+class Notification(models.Model):
+    sender = models.ForeignKey(User, related_name='sent_notifications', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(Company, related_name='received_notifications', on_delete=models.CASCADE)
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    read = models.BooleanField(default=False)

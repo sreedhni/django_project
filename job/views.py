@@ -2,9 +2,14 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
 from.models import Job,ApplyJob
 from job.forms import *
-from django.views.generic import ListView
-from django.db.models import Q
 from django.http import HttpResponseNotFound
+from django.shortcuts import render
+from .models import ApplyJob
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from .models import Notification
+
 
 def create_job(request):
     if request.user.is_recruiter and request.user.has_company:
@@ -28,6 +33,7 @@ def create_job(request):
     else:
         messages.warning (request, 'permission denied')
         return redirect("dashboard")
+    
 def update_job(request, pk):
     job_instance = Job.objects.get(pk=pk)  
 
@@ -51,30 +57,37 @@ def manage_jobs(request):
     context={"jobs":jobs}
     return render(request, 'job/manage_job.html',context)
 
+
+
+def send_notification_email(notification):
+    subject = 'New Job Application Notification'
+    html_message = render_to_string('job/notification_email.html', {'notification': notification})
+    plain_message = strip_tags(html_message)
+    from_email = "admin@gmail.com"  
+    to_email = notification.receiver.user.email
+    send_mail(subject, plain_message, from_email, [to_email], html_message=html_message)
+
 def apply_to_job(request, pk): 
-    if request.user.is_authenticated and request.user.is_applicant:
-        job=Job.objects.get(pk=pk)
-        if ApplyJob.objects.filter(user=request.user,job=pk).exists():
-            messages.warning(request,"permission denied")
-            return redirect("dashboard")
-        else:
-            ApplyJob.objects.create(job=job,user=request.user,status="pending")
-            messages.info(request, "You have successfully applied! Please see dashboard")
-            return redirect('applied-jobs')
-    else:
-        messages.info(request, "please login")
-        return redirect('login')
-def all_applicants(request, pk):
     try:
         job = Job.objects.get(pk=pk)
-        applicants = job.applyjob_set.all()
-        context = {'job': job, 'applicants': applicants}
-        return render(request, 'job/all_applicants.html', context)
+        existing_application = ApplyJob.objects.filter(user=request.user, job=job).exists()
+        if not existing_application:
+            notification = Notification.objects.create(
+                sender=request.user,
+                receiver=job.company,
+                message=f"New application received for {job.title}.",
+            )
+            apply_job = ApplyJob.objects.create(user=request.user, job=job)
+            send_notification_email(notification)
+            applicant_subject = 'Application Confirmation'
+            applicant_message = f"You have submitted an application for the position: {job.title}."
+            send_mail(applicant_subject, applicant_message, "admin@gmail.com", [request.user.email])
+            return redirect('applied-jobs')
+        else:
+            messages.warning(request, 'You have already applied to this job.')
+            return redirect('applied-jobs')
     except Job.DoesNotExist:
         return HttpResponseNotFound('<h1>Job not found</h1>')
-    
-from django.shortcuts import render
-from .models import ApplyJob
 
 def applied_jobs(request):
     if request.user.is_authenticated and request.user.is_applicant:
@@ -84,8 +97,31 @@ def applied_jobs(request):
     else:
         return render(request, 'job/unauthorized.html')
 
-from django.shortcuts import get_object_or_404, redirect
-from .models import ApplyJob
+
+def all_applicants(request, pk):
+    try:
+        job = Job.objects.get(pk=pk)
+        applicants = job.applyjob_set.all()
+        context = {'job': job, 'applicants': applicants}
+        return render(request, 'job/all_applicants.html', context)
+    except Job.DoesNotExist:
+        return HttpResponseNotFound('<h1>Job not found</h1>')
+    
+def change_applicant_status(request, apply_job_id, new_status):
+    try:
+        apply_job = ApplyJob.objects.get(pk=apply_job_id)
+        previous_status = apply_job.status
+        apply_job.status = new_status
+        apply_job.save()
+        subject = f'Status Update: {apply_job.job.title}'
+        message = f'The status of your application for the job "{apply_job.job.title}" has been changed from "{previous_status}" to "{new_status}".'
+        recipient_email = apply_job.user.email
+
+        send_mail(subject, message, 'your_email@example.com', [recipient_email])
+
+        return redirect('all-applicant', pk=apply_job.job.pk)
+    except ApplyJob.DoesNotExist:
+        return HttpResponseNotFound('<h1>Application not found</h1>')
 
 def delete_applied_job(request, job_id):
     if request.method == 'POST':
@@ -100,40 +136,5 @@ def delete_applied_job(request, job_id):
     return redirect('dashboard')  
 
 
-def job_list(request):
-    jobs = Job.objects.filter(is_available=True)  
 
-    if request.method == 'GET':
-        form = CreateJobForm(request.GET)
-        if form.is_valid():
-            keywords = form.cleaned_data.get('keywords')
-            location = form.cleaned_data.get('location')
-            min_salary = form.cleaned_data.get('min_salary')
-            max_salary = form.cleaned_data.get('max_salary')
-
-            if keywords:
-                jobs = jobs.filter(
-                    Q(title__icontains=keywords) |
-                    Q(description__icontains=keywords) |
-                    Q(requirements__icontains=keywords) |
-                    Q(ideal_candidate__icontains=keywords)
-                )
-
-            if location:
-                jobs = jobs.filter(location__icontains=location)
-
-            if min_salary:
-                jobs = jobs.filter(salary__gte=min_salary)
-
-            if max_salary:
-                jobs = jobs.filter(salary__lte=max_salary)
-
-    else:
-        form = CreateJobForm()
-
-    context = {
-        'jobs': jobs,
-        'form': form,
-    }
-    return render(request, 'job/search.html', context)
 

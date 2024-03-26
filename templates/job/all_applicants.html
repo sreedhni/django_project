@@ -11,16 +11,15 @@
                     <p class="card-text"><strong>Email:</strong> {{ applicant.user.email }}</p>
                     {% if applicant.resume %}
                         <p class="card-text"><strong>Resume:</strong> {{ applicant.resume.first_name }} {{ applicant.resume.surname }}</p>
-                        <!-- Add more resume details as needed -->
-                    {% else %}
-                        <p class="card-text"><strong>No resume uploaded</strong></p>
                     {% endif %}
+                    <p class="card-text"><strong>Status:</strong> {{ applicant.status }}</p>
                 </div>
-                {% if applicant.user%}
-                    <div class="text-center mt-4">
-                        <button type="submit" class=""><a href="{% url 'resume-details' pk=applicant.user.resume.id %}">View Resume</a></button>
-                    </div>
-                {% endif %}
+                <div class="text-center mt-4">
+                    <button type="submit" class=""><a href="{% url 'resume-details' pk=applicant.user.resume.id %}">View Resume</a></button>
+
+                    <a href="{% url 'change-status' applicant.id 'Accepted' %}" class="btn btn-success mr-2">Accept</a>
+                    <a href="{% url 'change-status' applicant.id 'Declined' %}" class="btn btn-danger">Decline</a>
+                </div>
             </div>
         {% endfor %}
     {% else %}
