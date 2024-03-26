@@ -35,6 +35,7 @@
                                 <p class="card-text"><strong>Location:</strong> {{ job.location }}</p>
                                 <p class="card-text"><strong>Employment Type:</strong> {{ job.Employment_Type }}</p>
                                 <!-- Add any other job details you want to display here -->
+
                             </div>
                         </div>
                     </div>
@@ -62,7 +63,9 @@
 
                     <p class="card-text" style="color: #fff;"><strong>Available:</strong> {% if job.is_available %}Yes{% else %}No{% endif %}</p>
                     <p class="card-text" style="color: #fff;"><strong>Posted on:</strong> {{ job.timestamp }}</p>
-                    <a href="{% url 'job-details' job.id %}" class="btn btn-light">Details</a>
+
+                    <a href="{% url 'job-details' job.id %}">Details</a>
+
                 </div>
             </div>
         </div>

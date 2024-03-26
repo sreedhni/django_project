@@ -13,7 +13,6 @@ class Job (models.Model):
     required_qualifications = models.CharField(max_length=50,null=True,blank=True)
     responsibilities = models.TextField(null=True,blank=True)
     application_Deadline = models.DateField(null=True,blank=True)
-    salary_Range = models.CharField(max_length=50,null=True,blank=True)
     option = (('Full-time', 'Full-time'), ('Part-time', 'Part-time'), ('Contract', 'Contract'), ('etc', 'etc'))
     Employment_Type = models.CharField(choices=option, max_length=20,null=True,blank=True)
     Company_Benefits = models.TextField(null=True,blank=True)
@@ -37,6 +36,7 @@ class ApplyJob(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=status_choices,default="Pending")
     resume=models.FileField(upload_to="resumes",null=True,blank=True)
+    is_active = models.BooleanField(default=True)
 
 
 class Notification(models.Model):

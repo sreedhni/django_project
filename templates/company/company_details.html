@@ -1,0 +1,18 @@
+
+{% extends 'users\base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h3>Company Details</h3>
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="card-title">{{ company.name }}</h5>
+            <p class="card-text"><strong>Location:</strong> {{ company.city }}</p>
+            <p class="card-text"><strong>Established_year:</strong> {{ company.est_date }}</p>
+
+            <p class="card-text"><strong>State:</strong> {{ company.state }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

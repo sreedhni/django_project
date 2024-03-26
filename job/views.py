@@ -72,31 +72,30 @@ def apply_to_job(request, pk):
         job = Job.objects.get(pk=pk)
         existing_application = ApplyJob.objects.filter(user=request.user, job=job).exists()
         if not existing_application:
+            notification_message = (
+                f"Hello, {job.company}\n\n"
+                f"A new job application has been received for the position \"{job.title}\".\n\n"
+                f"Please login to your dashboard to view the details.\n\n"
+                "Thank you!"
+            )
             notification = Notification.objects.create(
                 sender=request.user,
                 receiver=job.company,
-                message=f"New application received for {job.title}.",
+                message=notification_message
             )
             apply_job = ApplyJob.objects.create(user=request.user, job=job)
             send_notification_email(notification)
+            
             applicant_subject = 'Application Confirmation'
             applicant_message = f"You have submitted an application for the position: {job.title}."
             send_mail(applicant_subject, applicant_message, "admin@gmail.com", [request.user.email])
+            
             return redirect('applied-jobs')
         else:
             messages.warning(request, 'You have already applied to this job.')
             return redirect('applied-jobs')
     except Job.DoesNotExist:
         return HttpResponseNotFound('<h1>Job not found</h1>')
-
-def applied_jobs(request):
-    if request.user.is_authenticated and request.user.is_applicant:
-        applied_jobs = ApplyJob.objects.filter(user=request.user)
-        context = {'applied_jobs': applied_jobs}
-        return render(request, 'job/applied_jobs.html', context)
-    else:
-        return render(request, 'job/unauthorized.html')
-
 
 def all_applicants(request, pk):
     try:
@@ -106,7 +105,7 @@ def all_applicants(request, pk):
         return render(request, 'job/all_applicants.html', context)
     except Job.DoesNotExist:
         return HttpResponseNotFound('<h1>Job not found</h1>')
-    
+
 def change_applicant_status(request, apply_job_id, new_status):
     try:
         apply_job = ApplyJob.objects.get(pk=apply_job_id)
@@ -114,27 +113,31 @@ def change_applicant_status(request, apply_job_id, new_status):
         apply_job.status = new_status
         apply_job.save()
         subject = f'Status Update: {apply_job.job.title}'
-        message = f'The status of your application for the job "{apply_job.job.title}" has been changed from "{previous_status}" to "{new_status}".'
         recipient_email = apply_job.user.email
 
+        if new_status == 'Accepted':
+            message = f'Hello {apply_job.user.username},\n\nThe status of your job application for "{apply_job.job.title}" has been changed from "{previous_status}" to "{new_status}".\n\nCongratulations! You have been selected. Our recruiter will contact you soon.\n\nwith regards, \n\n {apply_job.job.company}'
+        elif new_status == 'Declined':
+            message = f'Hello {apply_job.user.username},\n\nThe status of your job application for "{apply_job.job.title}" has been changed from "{previous_status}" to "{new_status}".\n\nWe regret to inform you that your application has been declined. Unfortunately, we are moving forward with other candidates.\n\nwith regards, \n\n {apply_job.job.company}'
+        else:
+            message = f'Hello {apply_job.user.username},\n\nThe status of your job application for "{apply_job.job.title}" has been changed from "{previous_status}" to "{new_status}".'
         send_mail(subject, message, 'your_email@example.com', [recipient_email])
 
         return redirect('all-applicant', pk=apply_job.job.pk)
     except ApplyJob.DoesNotExist:
         return HttpResponseNotFound('<h1>Application not found</h1>')
 
-def delete_applied_job(request, job_id):
-    if request.method == 'POST':
-        if request.user.is_authenticated and request.user.is_applicant:
-            applied_job = get_object_or_404(ApplyJob, id=job_id, user=request.user)
-            if applied_job:
-                applied_job.delete()
-                messages.success(request, "Applied job deleted successfully.")
-            else:
-                messages.error(request, "Failed to delete applied job.")
-            return redirect('applied_jobs')
-    return redirect('dashboard')  
+
+from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib import messages
+from .models import ApplyJob
 
 
-
-
+def applied_jobs(request):
+    if request.user.is_authenticated and request.user.is_applicant:
+        applied_jobs = ApplyJob.objects.filter(user=request.user, is_active=True)
+        context = {'applied_jobs': applied_jobs}
+        return render(request, 'job/applied_jobs.html', context)
+    else:
+        return render(request, 'job/unauthorized.html')
+    

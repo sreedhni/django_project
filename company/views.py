@@ -18,7 +18,7 @@ def update_company(request):
                 var.save()
                 user.save()
                 messages.info (request, 'Your company is now active. You can start creating job ads')
-                return redirect('dashboard')
+                return redirect('company-detail', pk=company.pk)
             else:
                 messages.warning (request, 'Something went wrong')
         else:
@@ -30,12 +30,12 @@ def update_company(request):
 
         return redirect("dashboard")
 
-#view company details
 
 def company_details (request, pk):
     company=Company.objects.get(pk=pk)
     context = {'company':company}
     return render(request, 'company/company_details.html',context)
+
 class companyDeleteView(DeleteView):
     template_name = 'company/company_delete.html'
     model =Job

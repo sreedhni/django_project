@@ -37,7 +37,8 @@
                                 <h5 class="card-title">{{ job.title }}</h5>
                                 <p class="card-text"><strong>Location:</strong> {{ job.location }}</p>
                                 <p class="card-text"><strong>Employment Type:</strong> {{ job.Employment_Type }}</p>
-                                <!-- Add any other job details you want to display here -->
+                                <a href="{% url 'job-details' job.id %}">Details</a>
+                              
                             </div>
                         </div>
                     </div>
