@@ -12,13 +12,15 @@
                             <h5 class="card-title">{{ application.job.title }}</h5>
                             <p class="card-text"><strong>Company:</strong> {{ application.job.company }}</p>
                             <p class="card-text"><strong>Location:</strong> {{ application.job.location }}</p>
-                            {% if application.status == 'Accepted' %}
-                                <p class="card-text" style="color: green;"><strong>Status:</strong> {{ application.status }}</p>
-                            {% elif application.status == 'Declined' %}
-                                <p class="card-text" style="color: red;"><strong>Status:</strong> {{ application.status }}</p>
-                            {% elif application.status == 'pending' %}
-                                <p class="card-text" style="color: yellow;"><strong>Status:</strong> {{ application.status }}</p>
-                            {% endif %}
+                            {% if application.status|lower == 'accepted' %}
+                            <p class="card-text" style="color: green;"><strong>Status:</strong> {{ application.status }}</p>
+                        {% elif application.status|lower == 'declined' %}
+                            <p class="card-text" style="color: red;"><strong>Status:</strong> {{ application.status }}</p>
+                        {% elif application.status|lower == 'pending' %}
+                            <p class="card-text" style="color: yellow;"><strong>Status:</strong> {{ application.status }}</p>
+                        {% endif %}
+                        
+
                         </div>
                     </div>
                 </div>

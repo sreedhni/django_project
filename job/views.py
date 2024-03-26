@@ -87,7 +87,8 @@ def apply_to_job(request, pk):
             send_notification_email(notification)
             
             applicant_subject = 'Application Confirmation'
-            applicant_message = f"You have submitted an application for the position: {job.title}."
+            applicant_message = f"Hello, {request.user}!\n\nYou have submitted an application for the position: {job.title}."
+            "Thank you!"
             send_mail(applicant_subject, applicant_message, "admin@gmail.com", [request.user.email])
             
             return redirect('applied-jobs')
