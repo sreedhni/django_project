@@ -9,7 +9,6 @@
                 <div class="card-body">
                     <h1 class="card-title text-center mb-4">Update Your Resume Information</h1>
 
-                    <!-- Display messages if any -->
                     {% if messages %}
                         <div class="alert alert-info" role="alert">
                             {% for message in messages %}
@@ -22,7 +21,7 @@
                         {% csrf_token %}
                         {{ form.as_p }}
                         <div class="text-center mt-4">
-                            <button type="submit" class="btn btn-primary"><a href="{% url 'resume-details' pk=request.user.id%}"></a>update</button>
+                            <button type="submit" class="btn btn-primary">Update</button>
                         </div>
                     </form>
                 </div>
